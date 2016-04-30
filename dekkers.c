@@ -32,12 +32,12 @@ void* p() {
       wantp = false;
       pthread_yield();
       while(turn != 1) {
-        pthread_yield();
+
       }
       wantp = true;
     }
   }
-  criticalSection(); //critical section
+  criticalSection();
   turn = 2;
   wantp = false;
 }
@@ -49,7 +49,7 @@ void* q() {
       wantq = false;
       pthread_yield();
       while(turn != 2) {
-        pthread_yield();
+
       }
       wantq = true;
     }
