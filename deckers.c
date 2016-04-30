@@ -16,7 +16,7 @@ typedef int bool; // or #define bool int
 
 
 pthread_t tid[2];
-int x = 0;
+volatile int x = 0;
 bool wantp = false;
 bool wantq = false;
 int turn = 1;
@@ -32,7 +32,7 @@ void* p() {
       wantp = false;
       pthread_yield();
       while(turn != 1) {
-        printf("P\n");
+        pthread_yield();
       }
       wantp = true;
     }
@@ -49,7 +49,7 @@ void* q() {
       wantq = false;
       pthread_yield();
       while(turn != 2) {
-        printf("Q\n");
+        pthread_yield();
       }
       wantq = true;
     }
@@ -62,7 +62,7 @@ void* q() {
 
 void* addNumbers() {
   int i;
-  for(i = 0; i < 100000; i++) {
+  for(i = 0; i < 50000; i++) {
     pthread_t id = pthread_self();
     if(pthread_equal(id,tid[0])){
       p();
@@ -82,12 +82,12 @@ int main() {
   CPU_SET(0, &cpuset);
   pthread_attr_setaffinity_np(&myattr, sizeof(cpu_set_t), &cpuset);
 
-  pthread_create(&(tid[0]), NULL, &addNumbers, NULL);
-  pthread_create(&(tid[1]), NULL, &addNumbers, NULL);
+  pthread_create(&(tid[0]), &myattr, &addNumbers, NULL);
+  pthread_create(&(tid[1]), &myattr, &addNumbers, NULL);
 
   pthread_join(tid[0], NULL);
   pthread_join(tid[1], NULL);
 
-  printf("Final output of x should be 200,000\n");
+  printf("Final output of x should be 100,000\n");
   printf("x: %i\n", x);
 }
