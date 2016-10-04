@@ -1,4 +1,4 @@
-# Cs361
+# Dekker's Algorithm
 
 An implementation of Deckers Algorithm written in c
 
